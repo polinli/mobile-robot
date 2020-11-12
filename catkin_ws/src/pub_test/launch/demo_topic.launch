@@ -1,0 +1,4 @@
+<launch>
+<node name="demo_topic_publisher" pkg="pub_test" type="demo_topic_publisher" output="screen" />
+<node name="demo_topic_subscriber" pkg="pub_test" type="demo_topic_subscriber" output="screen" />
+</launch>

@@ -1,0 +1,4 @@
+<launch>
+<node name="task2_sub" pkg="pub_test" type="task2_sub" output="screen" />
+<node name="task2_pub" pkg="pub_test" type="task2_pub" output="screen" />
+</launch>

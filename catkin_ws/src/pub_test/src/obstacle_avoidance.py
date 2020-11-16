@@ -114,8 +114,9 @@ class ControlNode(object):
 
 	def cmd_publish():
 		self.car_cmd_pub.publish(self.motor_msg)
-
-
+		
+	def on_shutdown():
+		GPIO.cleanup()
 
 if __name__ == '__main__':
 	rospy.init_node("control_node", anonymous = True)
@@ -134,6 +135,6 @@ if __name__ == '__main__':
 		car.turn_right(2)
 		right_brightness = self.brightness
 		car.turn_left(2)
-
-	GPIO.cleanup()
+		
+	rospy.on_shutdown(car.on_shutdown)
 	

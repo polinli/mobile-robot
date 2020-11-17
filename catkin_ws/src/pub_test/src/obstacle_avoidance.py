@@ -32,20 +32,22 @@ class ControlNode(object):
 
 		#GPIO setup
 		GPIO.setwarnings(False) #ignore warnings
-		GPIO.setmode(GPIO.BCM)#GPIO.BOARD GPIO編號或Port Pin編號
+		GPIO.setmode(GPIO.BCM)#GPIO.BOARD GPIO or Port Pin
 		GPIO.setup(self.LEFT_BUTTON , GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 		GPIO.setup(self.RIGHT_BUTTON , GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 		GPIO.setup(self.MIDDLE_BUTTON , GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 
 		#switch button rising interrupt
-		GPIO.add_event_detect(self.LEFT_BUTTON, GPIO.RISING)
-		GPIO.add_event_detect(self.RIGHT_BUTTON, GPIO.RISING)
-		GPIO.add_event_detect(self.MIDDLE_BUTTON, GPIO.RISING) 
+		GPIO.add_event_detect(self.LEFT_BUTTON, GPIO.RISING, callback = self.left_touched, bouncetime = 200)
+		GPIO.add_event_detect(self.RIGHT_BUTTON, GPIO.RISING, callback = self.right_touched, bouncetime = 200)
+		GPIO.add_event_detect(self.MIDDLE_BUTTON, GPIO.RISING, callback = self.middle_touched, bouncetime = 200) 
 
 		#define callback
-		GPIO.add_event_callback(self.LEFT_BUTTON, callback = self.left_touched)
-		GPIO.add_event_callback(self.RIGHT_BUTTON, callback = self.right_touched)
-		GPIO.add_event_callback(self.MIDDLE_BUTTON, callback = self.middle_touched)
+		#GPIO.add_event_callback(self.LEFT_BUTTON, callback = self.left_touched)
+		#GPIO.add_event_callback(self.RIGHT_BUTTON, callback = self.right_touched)
+		#GPIO.add_event_callback(self.MIDDLE_BUTTON, callback = self.middle_touched)
+
+		self.forward(5)
 
 	#def run(self, delay):
 	#	self.go_straight()
@@ -84,26 +86,27 @@ class ControlNode(object):
 		self.stop()
 
 	def left_touched(self, channel): 
-		if(GPIO.input(RIGHT_BUTTON)): #both buttons are touched
+		if(GPIO.input(self.RIGHT_BUTTON)): #both buttons are touched
 			self.both_touched()
 			return
 		
 		self.motor_msg.data = [0, -100]
 		self.cmd_publish()
 
-		GPIO.wait_for_edge(LEFT_BUTTON, GPIO.FALLING)
+		GPIO.wait_for_edge(self.LEFT_BUTTON, GPIO.FALLING)
 		time.sleep(0.5)
 		self.stop()
 
 	def right_touched(self, channel): 
-		if(GPIO.input(LEFT_BUTTON)): #both buttons are touched
+		if(GPIO.input(self.LEFT_BUTTON)): #both buttons are touched
 			self.both_touched()
 			return
 		
 		self.motor_msg.data = [-100, 0]
 		self.cmd_publish()
 
-		GPIO.wait_for_edge(RIGHT_BUTTON, GPIO.FALLING)
+		GPIO.wait_for_edge(self.RIGHT_BUTTON, GPIO.FALLING)
+		print("fuck")
 		time.sleep(0.5)
 		self.stop()
 
@@ -112,13 +115,14 @@ class ControlNode(object):
 		self.turn_left(3)
 
 	def middle_touched(self, channel):
-		#find the ball and stop
+	    pass	
+            #find the ball and stop
 		
 
 
 	#def get_brightness():	return brightness
 
-	def cmd_publish():
+	def cmd_publish(self):
 		self.car_cmd_pub.publish(self.motor_msg)
 		
 	def on_shutdown():
@@ -127,12 +131,12 @@ class ControlNode(object):
 if __name__ == '__main__':
 	rospy.init_node("control_node", anonymous = True)
 	car = ControlNode()
-	rospy.spin()
 	
 	while not rospy.is_shutdown():
 		#brightness_record = [0, 0, 0]
+		print("dick")
 		car.forward(5)
-'''
+		'''
 		brightness_record[1] = self.brightness #middel
 
 		car.turn_left(2)
@@ -149,5 +153,6 @@ if __name__ == '__main__':
 
 		else if(brightness_record.index(max(brightness_record)) == 2):
 		'''
-	rospy.on_shutdown(car.on_shutdown)
+	rospy.spin()
+	#rospy.on_shutdown(car.on_shutdown)
 	

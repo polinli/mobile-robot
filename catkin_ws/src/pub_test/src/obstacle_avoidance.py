@@ -15,17 +15,17 @@ class ControlNode(object):
 	def __init__(self):
 		self.node_name = rospy.get_name()
 
-		self.car_cmd_pub = rospy.Publisher("/motor", Int32MultiArray, queue_size = 1)
+		self.car_cmd_pub = rospy.Publisher("/wheel_speed", Int32MultiArray, queue_size = 1)
 		self.brightness_sub = rospy.Subscriber("/brightness", Int32, self.cb_brightness, queue_size = 1)
 		
 
 		self.motor_msg = Int32MultiArray() #motor speed array [left, right]
 		self.brightness  = 0
 
-		#switch button pin
-		self.LEFT_BUTTON = 21
-		self.RIGHT_BUTTON = 21
-		self.MIDDLE_BUTTON = 21
+		#switch button GPIO pin
+		self.LEFT_BUTTON = 23
+		self.RIGHT_BUTTON = 24
+		self.MIDDLE_BUTTON = 25
 
 		#GPIO setup
 		GPIO.setwarnings(False) #ignore warnings
@@ -87,7 +87,9 @@ class ControlNode(object):
 		
 		self.motor_msg.data = [0, -100]
 		self.cmd_publish()
+
 		GPIO.wait_for_edge(LEFT_BUTTON, GPIO.FALLING)
+		time.sleep(0.5)
 		self.stop()
 
 	def right_touched(self, channel): 
@@ -97,7 +99,9 @@ class ControlNode(object):
 		
 		self.motor_msg.data = [-100, 0]
 		self.cmd_publish()
+
 		GPIO.wait_for_edge(RIGHT_BUTTON, GPIO.FALLING)
+		time.sleep(0.5)
 		self.stop()
 
 	def both_touched(self):
@@ -124,17 +128,24 @@ if __name__ == '__main__':
 	rospy.spin()
 	
 	while not rospy.is_shutdown():
+		#brightness_record = [0, 0, 0]
 		car.forward(5)
-
-		middle_brightness = self.brightness
+'''
+		brightness_record[1] = self.brightness #middel
 
 		car.turn_left(2)
-		left_brightness = self.brightness
+		brightness_record[0] = self.brightness #left
 		car.turn_right(2)
 
 		car.turn_right(2)
-		right_brightness = self.brightness
+		brightness_record[2] = self.brightness #right
 		car.turn_left(2)
-		
+
+		if(brightness_record.index(max(brightness_record)) == 0): #left side have the max brightness
+
+		else if(brightness_record.index(max(brightness_record)) == 1):
+
+		else if(brightness_record.index(max(brightness_record)) == 2):
+		'''
 	rospy.on_shutdown(car.on_shutdown)
 	

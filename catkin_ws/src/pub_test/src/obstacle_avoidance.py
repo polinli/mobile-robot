@@ -12,6 +12,9 @@ except RuntimeError:
 	print("GPIO import error")
 
 class ControlNode(object):
+	def cb_brightness(self, msg):
+		self.brightness = msg.data
+
 	def __init__(self):
 		self.node_name = rospy.get_name()
 
@@ -111,8 +114,7 @@ class ControlNode(object):
 	def middle_touched(self, channel):
 		#find the ball and stop
 		
-	def cb_brightness(self, msg):
-		self.brightness = msg.data
+
 
 	#def get_brightness():	return brightness
 

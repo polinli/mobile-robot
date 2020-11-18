@@ -11,8 +11,8 @@ ros/ros.h
 /home/ubuntu/catkin_ws/src/pub_test/src/ros/ros.h
 std_msgs/Int32.h
 /home/ubuntu/catkin_ws/src/pub_test/src/std_msgs/Int32.h
-std_msgs/Int32MultiArray.h
-/home/ubuntu/catkin_ws/src/pub_test/src/std_msgs/Int32MultiArray.h
+std_msgs/Int8MultiArray.h
+/home/ubuntu/catkin_ws/src/pub_test/src/std_msgs/Int8MultiArray.h
 iostream
 -
 
@@ -678,7 +678,7 @@ ros/builtin_message_traits.h
 ros/message_operations.h
 -
 
-/opt/ros/melodic/include/std_msgs/Int32MultiArray.h
+/opt/ros/melodic/include/std_msgs/Int8MultiArray.h
 string
 -
 vector

@@ -60,7 +60,7 @@ pub_test/CMakeFiles/car_pub.dir/src/car_pub.cpp.o
  /opt/ros/melodic/include/ros/wall_timer_options.h
  /opt/ros/melodic/include/rosconsole/macros_generated.h
  /opt/ros/melodic/include/std_msgs/Int32.h
- /opt/ros/melodic/include/std_msgs/Int32MultiArray.h
+ /opt/ros/melodic/include/std_msgs/Int8MultiArray.h
  /opt/ros/melodic/include/std_msgs/MultiArrayDimension.h
  /opt/ros/melodic/include/std_msgs/MultiArrayLayout.h
  /opt/ros/melodic/include/xmlrpcpp/XmlRpcDecl.h

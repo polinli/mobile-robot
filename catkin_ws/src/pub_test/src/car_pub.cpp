@@ -1,6 +1,6 @@
 #include "ros/ros.h" 
 #include "std_msgs/Int32.h"
-#include "std_msgs/Int32MultiArray.h" 
+#include "std_msgs/Int8MultiArray.h" 
 #include <iostream> 
 
 int main(int argc, char **argv)
@@ -8,7 +8,7 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "car_pub");      
 	ros::NodeHandle node_obj;      
 
-	ros::Publisher number_publisher = node_obj.advertise<std_msgs::Int32MultiArray>("/wheel_speed", 10);
+	ros::Publisher number_publisher = node_obj.advertise<std_msgs::Int8MultiArray>("/wheel_speed", 10);
     //ros::Subscriber number_subscriber = node_obj.subscribe("/return_numbers",  0, number_callback);
 
   	ros::Rate loop_rate(0.3);
@@ -19,7 +19,7 @@ int main(int argc, char **argv)
   	while (ros::ok())
   	{   
                   
-		std_msgs::Int32MultiArray msg;
+		std_msgs::Int8MultiArray msg;
 		msg.data.clear();
 
         printf("user's right is ");

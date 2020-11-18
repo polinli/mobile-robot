@@ -2,8 +2,8 @@
 import rospy
 import time
 from geometry_msgs.msg import Twist
-from std_msgs.msg import Int32MultiArray
-from std_msgs.msg import Int32
+from std_msgs.msg import Int8MultiArray
+from std_msgs.msg import Int16
 
 try:
 	import RPi.GPIO as GPIO
@@ -18,16 +18,16 @@ class ControlNode(object):
 	def __init__(self):
 		self.node_name = rospy.get_name()
 
-		self.car_cmd_pub = rospy.Publisher("/wheel_speed", Int32MultiArray, queue_size = 1)
-		self.brightness_sub = rospy.Subscriber("/brightness", Int32, self.cb_brightness, queue_size = 1)
+		self.car_cmd_pub = rospy.Publisher("/wheel_speed", Int8MultiArray, queue_size = 5)
+		self.brightness_sub = rospy.Subscriber("/brightness", Int16, self.cb_brightness, queue_size = 1)
 		
 
-		self.motor_msg = Int32MultiArray() #motor speed array [left, right]
+		self.motor_msg = Int8MultiArray() #motor speed array [left, right]
 		self.brightness  = 0
 
 		#switch button GPIO pin
 		self.LEFT_BUTTON = 23
-		self.RIGHT_BUTTON = 24
+		self.RIGHT_BUTTON = 21
 		self.MIDDLE_BUTTON = 25
 
 		#GPIO setup
@@ -47,17 +47,17 @@ class ControlNode(object):
 		#GPIO.add_event_callback(self.RIGHT_BUTTON, callback = self.right_touched)
 		#GPIO.add_event_callback(self.MIDDLE_BUTTON, callback = self.middle_touched)
 
-		self.forward(5)
+		self.forward()
 
 	#def run(self, delay):
 	#	self.go_straight()
 		
-	def forward(self, delay):
+	def forward(self):
 		self.motor_msg.data = [100, 100]
 		self.cmd_publish()
 
-		time.sleep(delay)
-		self.stop()
+		#time.sleep(delay)
+		#self.stop()
 
 	def backward(self, delay):
 		self.motor_msg.data = [-100, -100]
@@ -92,10 +92,17 @@ class ControlNode(object):
 		
 		self.motor_msg.data = [0, -100]
 		self.cmd_publish()
+		print("left touched")
 
-		GPIO.wait_for_edge(self.LEFT_BUTTON, GPIO.FALLING)
-		time.sleep(0.5)
-		self.stop()
+		while GPIO.input(self.LEFT_BUTTON):
+			time.sleep(0.2)
+			while GPIO.input(self.LEFT_BUTTON):
+				time.sleep(0.2)
+
+		print("left release")
+		time.sleep(0.2)
+		#self.stop()
+		car.forward()
 
 	def right_touched(self, channel): 
 		if(GPIO.input(self.LEFT_BUTTON)): #both buttons are touched
@@ -104,14 +111,20 @@ class ControlNode(object):
 		
 		self.motor_msg.data = [-100, 0]
 		self.cmd_publish()
+		print("right touched")
 
-		GPIO.wait_for_edge(self.RIGHT_BUTTON, GPIO.FALLING)
-		print("fuck")
-		time.sleep(0.5)
-		self.stop()
+		while GPIO.input(self.RIGHT_BUTTON):
+			time.sleep(0.2)
+			while GPIO.input(self.RIGHT_BUTTON):
+				time.sleep(0.2)
+
+		print("right release")
+		time.sleep(0.2)
+		#self.stop()
+		car.forward()
 
 	def both_touched(self):
-		self.backward(2)
+		self.backward(3)
 		self.turn_left(3)
 
 	def middle_touched(self, channel):
@@ -120,7 +133,8 @@ class ControlNode(object):
 		
 
 
-	#def get_brightness():	return brightness
+	def get_brightness():
+		return brightness
 
 	def cmd_publish(self):
 		self.car_cmd_pub.publish(self.motor_msg)
@@ -133,9 +147,10 @@ if __name__ == '__main__':
 	car = ControlNode()
 	
 	while not rospy.is_shutdown():
-		#brightness_record = [0, 0, 0]
-		print("dick")
-		car.forward(5)
+		brightness_record = [0, 0, 0]
+		#print("dick")
+		#car.forward(1)
+		pass
 		'''
 		brightness_record[1] = self.brightness #middel
 

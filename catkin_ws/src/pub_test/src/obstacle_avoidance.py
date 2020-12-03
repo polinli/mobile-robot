@@ -122,8 +122,8 @@ class ControlNode(object):
 		#find the ball and stop
 		
 	def get_beacon(self):
-                if self.beacon is not 0:
-                    print(self.beacon)
+		if self.beacon is not 0:
+			print(self.beacon)
 		return self.beacon
 
 	def get_brightness(self):

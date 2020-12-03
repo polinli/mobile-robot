@@ -1,0 +1,4 @@
+<launch>
+<node name="beacon_detection_node" pkg="demo3" type="beacon_detection_node" />
+<node name="control_node" pkg="pub_test" type="obstacle_avoidance.py" output="screen" />
+</launch>

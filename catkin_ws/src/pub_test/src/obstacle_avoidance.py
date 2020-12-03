@@ -164,7 +164,7 @@ class ControlNode(object):
 			print("IR navigating")
 			for i in range (40):
 				self.turn_left_slow(0.5)
-				if self.get_beacon() == 600:
+				if self.get_beacon() == 1500:
 					self.stop()
 					self.forward()
 					return

@@ -19,15 +19,20 @@ class ControlNode(object):
 	def cb_brightness(self, msg):
 		self.brightness = msg.data
 
+	def cb_beacon(self, msg):
+		self.beacon = msg.data
+
 	def __init__(self):
 		self.node_name = rospy.get_name()
 
 		self.car_cmd_pub = rospy.Publisher("/wheel_speed", Int16MultiArray, queue_size = 5)
 		self.brightness_sub = rospy.Subscriber("/brightness", Int16, self.cb_brightness, queue_size = 1)
+		self.beacon_sub = rospy.Subscriber("/beacon_data", Int16, self.cb_beacon, queue_size = 1)
 		
 
 		self.motor_msg = Int16MultiArray() #motor speed array [left, right]
-		self.brightness  = 0
+		self.brightness = 0
+		self.beacon = 0
 
 		#switch button GPIO pin
 		self.LEFT_BUTTON = 23
@@ -61,7 +66,7 @@ class ControlNode(object):
 	#self.go_straight()
 		
 	def forward(self):
-		self.motor_msg.data = [160, 160]
+		self.motor_msg.data = [200, 200]
 		self.cmd_publish()
 		print("forward")
 
@@ -69,7 +74,7 @@ class ControlNode(object):
 		#self.navigate()
 
 	def backward(self, delay):
-		self.motor_msg.data = [-120, -120]
+		self.motor_msg.data = [-200, -200]
 		self.cmd_publish()
 		print("backward")
 
@@ -83,14 +88,14 @@ class ControlNode(object):
 
 
 	def turn_left(self, delay):
-		self.motor_msg.data = [-100, 100]
+		self.motor_msg.data = [-180, 180]
 		self.cmd_publish()
 
 		rospy.sleep(delay)
 		#self.stop()
 
 	def turn_right(self, delay):
-		self.motor_msg.data = [100, -100]
+		self.motor_msg.data = [180, -180]
 		self.cmd_publish()
 
 		rospy.sleep(delay)
@@ -116,7 +121,10 @@ class ControlNode(object):
 		self.stop()
 		#find the ball and stop
 		
-
+	def get_beacon(self):
+                if self.beacon is not 0:
+                    print(self.beacon)
+		return self.beacon
 
 	def get_brightness(self):
 		return self.brightness
@@ -147,13 +155,22 @@ class ControlNode(object):
 			self.stop()
 			print(rec)
 
-			for i in range(10-num):
+			for i in range(10-num+1):
 				self.turn_left_slow(0.5)
 			print("navigated")
 			self.stop()
 			self.forward()
 		elif (self.M_state):
 			print("IR navigating")
+			for i in range (40):
+				self.turn_left_slow(0.5)
+				if self.get_beacon() == 600:
+					self.stop()
+					self.forward()
+					return
+			self.stop()
+			self.forward()			
+
 
 	def Btncheck(self):
 
@@ -162,16 +179,16 @@ class ControlNode(object):
 		M_inp = GPIO.input(self.MIDDLE_BUTTON)
 
 		if ((not self.M_prev_inp) and M_inp):
-			print("millde touched")
+			print("middle touched")
 			self.stop()
 			self.M_state = 1
 			self.navigate()
 
-		elif (self.M_prev_inp and (not M_inp)):
-			print("millde released")
-			self.stop()
-			self.M_state = 0
-			self.navigate()
+		#elif (self.M_prev_inp and (not M_inp)):
+			#print("middle released")
+			#self.stop()
+			#self.M_state = 0
+			#self.navigate()
 
 		elif (((not self.L_prev_inp) and L_inp) and ((not self.R_prev_inp) and R_inp)):
 			print("both touched")

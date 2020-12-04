@@ -56,7 +56,7 @@ class ControlNode(object):
 		self.stop()
 
 		self.forward()
-		rospy.sleep(8)
+		rospy.sleep(6)
 		self.stop()
 		
 		self.navigate()
@@ -155,16 +155,16 @@ class ControlNode(object):
 			self.stop()
 			print(rec)
 
-			for i in range(10-num+1):
+			for i in range(10-num):
 				self.turn_left_slow(0.5)
 			print("navigated")
 			self.stop()
 			self.forward()
 		elif (self.M_state):
 			print("IR navigating")
-			for i in range (40):
-				self.turn_left_slow(0.5)
-				if self.get_beacon() == 1500:
+			for i in range (60):
+				self.turn_left_slow(0.3)
+				if self.get_beacon() == 600:
 					self.stop()
 					self.forward()
 					return

@@ -164,7 +164,7 @@ class ControlNode(object):
 			print("IR navigating")
 			for i in range (60):
 				self.turn_left_slow(0.3)
-				if self.get_beacon() == 600:
+				if self.get_beacon() == 1500:
 					self.stop()
 					self.forward()
 					return
@@ -243,8 +243,8 @@ class ControlNode(object):
 if __name__ == '__main__':
 	rospy.init_node("control_node", anonymous = True)
 	car = ControlNode()
-	rospy.on_shutdown(car.on_shutdown)
-	rospy.spin()
+	#rospy.on_shutdown(car.on_shutdown)
+	#rospy.spin()
 	
 	while not rospy.is_shutdown():
 		car.Btncheck()	

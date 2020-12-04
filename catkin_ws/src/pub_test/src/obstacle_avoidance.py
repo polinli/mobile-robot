@@ -236,9 +236,15 @@ class ControlNode(object):
 		GPIO.cleanup()
 		sys.exit(0)
 
+	def on_shutdown(self):
+		rospy.logwarn("Stopping motors")
+		self.stop()
+
 if __name__ == '__main__':
 	rospy.init_node("control_node", anonymous = True)
 	car = ControlNode()
+	rospy.on_shutdown(car.on_shutdown)
+	rospy.spin()
 	
 	while not rospy.is_shutdown():
 		car.Btncheck()	

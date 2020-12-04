@@ -106,16 +106,12 @@ class ControlNode(object):
 		self.cmd_publish()
 
 		rospy.sleep(delay)
-		#self.stop()
 
 	def turn_right_slow(self, delay):
 		self.motor_msg.data = [50, -50]
 		self.cmd_publish()
 
 		rospy.sleep(delay)
-		#self.stop()
-
-
 
 	def middle_touched(self, channel):
 		self.stop()
@@ -167,6 +163,7 @@ class ControlNode(object):
 				if self.get_beacon() == 1500:
 					self.stop()
 					self.forward()
+					rospy.sleep(2)
 					return
 			self.stop()
 			self.forward()			
